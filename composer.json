@@ -1,0 +1,19 @@
+{
+    "name": "ukatama/wiki",
+    "description": "A lightweight wiki can be edited in markdown",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ukatama",
+            "email": "dev.ukatama@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ukatama\\Wiki\\": "src/"
+        }
+    },
+    "require": {
+        "michelf/php-markdown": "~1.4"
+    }
+}

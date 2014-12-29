@@ -1,0 +1,32 @@
+body {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+
+header h1,
+header nav ul,
+body > main {
+    max-width: 780px;
+    margin: auto;
+    text-align: left;
+}
+
+header {
+    background-color: #eee;
+}
+header nav {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+}
+header nav ul {
+    padding: 0;
+}
+header nav ul li {
+    display: inline;
+}
+
+textarea[name=code] {
+    width: 100%;
+    height: 20em;
+}

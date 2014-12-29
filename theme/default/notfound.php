@@ -17,7 +17,10 @@
                 </ul>
             </nav>
         </header>
-        <main>Sorry, "{{page}}" not exists.</main>
+        <div id=container>
+            <nav>{{sidebar}}</nav>
+            <main>Sorry, "{{page}}" not exists.</main>
+        </div>
     </body>
 </html>
 

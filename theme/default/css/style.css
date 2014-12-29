@@ -6,7 +6,7 @@ body {
 
 header h1,
 header nav ul,
-body > main {
+#container {
     max-width: 780px;
     margin: auto;
     text-align: left;
@@ -26,6 +26,21 @@ header nav ul li {
     display: inline;
 }
 
+#container {
+    display: flex;
+    display: -webkit-flex;
+}
+
+#container > nav {
+    flex: 0 0 180px;
+    -webkit-flex: 0 0 200px;
+}
+#container > main {
+    flex: 1 1 auto;
+    -webkit-flex: 1 1 auto;
+}
+
+/* edit */
 textarea[name=code] {
     width: 100%;
     height: 20em;

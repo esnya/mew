@@ -18,12 +18,15 @@
                 </ul>
             </nav>
         </header>
-        <main>
-            <p>Are you sure to remove?</p>
-            <form method=POST>
-                <input type=hidden name=remove value=yes>
-                <input type=submit value=Remove>
-            </form>
-        </main>
+        <div id=container>
+        <nav>{{sidebar}}</nav>
+            <main>
+                <p>Are you sure to remove?</p>
+                <form method=POST>
+                    <input type=hidden name=remove value=yes>
+                    <input type=submit value=Remove>
+                </form>
+            </main>
+        </div>
     </body>
 </html>

@@ -17,20 +17,23 @@
                 </ul>
             </nav>
         </header>
-        <main>
-            <form method="post">
+        <div id=container>
+            <nav>{{sidebar}}</nav>
+            <main>
+                <form method="post">
+                    <div>
+                        <textarea name=code>{{code}}</textarea>
+                    </div>
+                    <div>
+                        <input type="submit">
+                    </div>
+                </form>
                 <div>
-                    <textarea name=code>{{code}}</textarea>
+                    <h1>Preview</h1>
+                    <div id=preview>{{content}}</div>
                 </div>
-                <div>
-                    <input type="submit">
-                </div>
-            </form>
-            <div>
-                <h1>Preview</h1>
-                <div id=preview>{{content}}</div>
-            </div>
-        </main>
+            </main>
+        </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script>
             $(function () {

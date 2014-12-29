@@ -17,11 +17,14 @@
                 </ul>
             </nav>
         </header>
-        <main>
-            <form method=POST>
-                <input type=text name=name>
-                <input type=submit>
-            </form>
-        </main>
+        <div id=container>
+            <nav>{{sidebar}}</nav>
+            <main>
+                <form method=POST>
+                    <input type=text name=name>
+                    <input type=submit>
+                </form>
+            </main>
+        </div>
     </body>
 </html>

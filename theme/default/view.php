@@ -17,6 +17,9 @@
                 </ul>
             </nav>
         </header>
-        <main>{{content}}</main>
+        <div id=container>
+            <nav>{{sidebar}}</nav>
+            <main>{{content}}</main>
+        </div>
     </body>
 </html>

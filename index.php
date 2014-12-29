@@ -16,6 +16,7 @@ function redirect($url) {
 try {
     $theme = new Theme('default');
     $page = new Page(array_key_exists('p', $_GET) ? $_GET['p'] : 'index');
+    $sidebar = new Page('sidebar');
 
     $action = 'view';
     if (array_key_exists('a', $_GET)) {
@@ -57,6 +58,7 @@ try {
         'title' => $page->name,
         'code' => $page->getMarkdown(),
         'content' => $page->getHTML(),
+        'sidebar' => $sidebar->getHTML(),
     ];
 
     $theme->render($action, $variables);

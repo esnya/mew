@@ -15,9 +15,9 @@ $action = array_key_exists('a', $_GET) ? $_GET['a'] : 'view';
 try {
     $controller->dispatch($page, $action);
 } catch (NotFoundException $e) {
-    $controller->dispatch($page, 'notfound', ['message' => $e->getMessage()]);
+    $controller->dispatch($page, 'notfound', ['page' => $page, 'message' => $e->getMessage()]);
 } catch (ForbiddenException $e) {
-    $controller->dispatch($page, 'forbidden', ['message' => $e->getMessage()]);
+    $controller->dispatch($page, 'forbidden', ['page' => $page, 'message' => $e->getMessage()]);
 } catch (Exception $e) {
-    $controller->dispatch($page, 'error', ['message' => $e->getMessage()]);
+    $controller->dispatch($page, 'error', ['page' => $page, 'message' => $e->getMessage()]);
 }

@@ -34,12 +34,14 @@ class Controller {
         $options = $_GET;
 
         if ($this->{$action}($options) !== false) {
-            $variables['page'] = $this->page->name;
-            $variables['title'] = $this->page->name;
-            $variables['code'] = $this->page->getMarkdown();
-            $variables['content'] = $this->page->getHTML();
-            $variables['sidebar'] = $this->sidebar->getHTML();
-            $variables['files'] = $this->page->getFiles();
+            if ($this->page) {
+                $variables['page'] = $this->page->name;
+                $variables['title'] = $this->page->name;
+                $variables['code'] = $this->page->getMarkdown();
+                $variables['content'] = $this->page->getHTML();
+                $variables['sidebar'] = $this->sidebar->getHTML();
+                $variables['files'] = $this->page->getFiles();
+            }
 
             $this->theme->render($this->action, $variables);
         }
@@ -49,7 +51,7 @@ class Controller {
         if (is_array($url)) {
             return $this->redirect('?' . implode('&', array_map(function ($key, $value) {
                 return urlencode($key) . '=' . urlencode($value);
-            }, $url)));
+            }, array_keys($url), array_values($url))));
         } else {
             header('Location: ' . $url, 304);
             return false;
@@ -57,10 +59,13 @@ class Controller {
     }
 
     public function notfound() {
+        $this->page = null;
     }
     public function forbidden() {
+        $this->page = null;
     }
     public function error() {
+        $this->page = null;
     }
 
     public function view($options = []) {
@@ -68,15 +73,13 @@ class Controller {
 
     public function add() {
         if ($this->method == 'POST' && array_key_exists('name', $this->data)) {
-            return $this->redirect(['a' => 'edit', 'p' => $this->data['name']]);
+            $page = new Page($this->data['name']);
+            $page->touch();
+            return $this->redirect(['a' => 'edit', 'p' => $page->name]);
         }
     }
 
     public function edit($options = []) {
-        if (!$this->page->exists()) {
-            $this->page->touch();
-        }
-
         if ($this->method == 'POST' && array_key_exists('code', $this->data)) {
             file_put_contents($this->page->getFile(), $this->data['code']);
             return $this->redirect(['p' => $this->page->name]);

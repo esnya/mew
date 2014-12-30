@@ -29,7 +29,7 @@ class Page {
             return $this->_markdown;
         } else {
             if (!$this->exists()) {
-                throw new NotFoundException($page->name);
+                throw new NotFoundException($this->name);
             }
             $this->_markdown = file_get_contents($this->getFile());
             $this->_loaded = $this->name;

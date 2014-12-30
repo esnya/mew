@@ -5,8 +5,9 @@
 @endblock
 
 @block(content)
-<form method=POST>
-    <p>A page "{{page}}" doesn't exists.</p>
-    <p>Add and edit "<a href="?p={{page}}&a=edit">{{page}}</a>" ?</p>
+<p>A page "{{page}}" doesn't exists.</p>
+<form action="?a=add" method=POST>
+    <input type=hidden name=name value="{{page}}">
+    <p><input type=submit value='Add "{{page}}"'></p>
 </form>
 @endblock

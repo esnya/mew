@@ -22,11 +22,17 @@
             <main>
                 <form method="post">
                     <div>
+                        <h1>Edit</h1>
                         <textarea name=code>{{code}}</textarea>
                     </div>
                     <div>
                         <input type="submit">
                     </div>
+                </form>
+                <form action="?p={{page}}&a=upload" method=POST enctype=multipart/form-data>
+                    <h1>Upload File</h1>
+                    <input type=file name=file>
+                    <input type=submit>
                 </form>
                 <div>
                     <h1>Preview</h1>

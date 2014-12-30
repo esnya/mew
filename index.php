@@ -5,9 +5,11 @@ require_once __DIR__ . '/config/wiki.php';
 ini_set('display_errors', $config['debug']);
 
 use \Michelf\MarkdownExtra;
-use ukatama\Wiki\Theme;
-use ukatama\Wiki\Page;
+use ukatama\Wiki\Error\ForbiddenException;
+use ukatama\Wiki\Error\InternalErrorException;
 use ukatama\Wiki\Error\NotFoundException;
+use ukatama\Wiki\Page;
+use ukatama\Wiki\Theme;
 
 function redirect($url) {
     header('Location: ' . $url, true, 301);
@@ -50,6 +52,58 @@ try {
         && $_POST['remove'] == 'yes') {
         $page->remove();
         redirect('?p=index');
+    } else if ($action == 'upload'
+        && $_SERVER['REQUEST_METHOD'] === 'POST'
+        && array_key_exists('file', $_FILES)
+    ) {
+        $file = $_FILES['file'];
+
+        if ($file['error']) {
+            throw new InternalErrorException;
+        }
+
+        if (!in_array($file['type'], $config['file']['type'])) {
+            throw new ForbiddenException('Invalid file type');
+        }
+
+        if ($file['size'] > $config['file']['max_size']) {
+            throw new ForbiddenException('Too large file');
+        }
+
+        if (!is_uploaded_file($file['tmp_name'])) {
+            throw new ForbiddenException('Invalid file');
+        }
+
+        $id = $page->getHash() . '_' . hash('sha256', $file['name']);
+        $dst = dirname(__FILE__) . '/file/' . $id;
+        if (!move_uploaded_file($file['tmp_name'], $dst)) {
+            throw new InternalErrorException;
+        }
+
+        file_put_contents($dst . '.json', json_encode($file));
+
+        redirect('?a=edit&p=' . urlencode($page->name));
+    } else if($action == 'file') {
+        if (!array_key_exists('f', $_GET)) {
+            throw new ForbiddenException;
+        }
+
+        $id = $page->getHash() . '_' . hash('sha256', $_GET['f']);
+        $path = dirname(__FILE__) . '/file/' . $id;
+        if (!file_exists($path)) {
+            throw new NotFoundException;
+        }
+        $json = $path. '.json';
+        if (!file_exists($json)) {
+            throw new NotFoundException;
+        }
+        $file = json_decode(file_get_contents($json), true);
+
+        header('Content-Type: ' . $file['type']);
+        header('Content-Length: ' . $file['size']);
+        header('Content-Disposition: inline; filename="' . str_replace('"', '?', $file['name']) . '"');
+        echo file_get_contents($path);
+        exit();
     }
 
     $variables = [
@@ -58,6 +112,7 @@ try {
         'code' => $page->getMarkdown(),
         'content' => $page->getHTML(),
         'sidebar' => $sidebar->getHTML(),
+        'files' => $page->getFiles(),
     ];
 
     $theme->render($action, $variables);

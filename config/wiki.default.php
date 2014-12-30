@@ -9,5 +9,11 @@ $config = [
         hash('sha256', 'admin'), // sha256 hashed
     ],  // Admin's name and password / 管理者名とパスワード
 
+    'filetype' => [
+        'image/png',
+        'image/bmp',
+        'image/jpeg',
+    ],  // Arrowed uploading file types / アップロードを許可するファイルタイプ
+
     'debug' => false,    // Debug mode / デバッグモード
 ];

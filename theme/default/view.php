@@ -19,7 +19,16 @@
         </header>
         <div id=container>
             <nav>{{sidebar}}</nav>
-            <main>{{content}}</main>
+            <main>
+                <div>{{content}}</div>
+                <footer>
+                    <ul class=file-list>
+                    @foreach(file in files)
+                    <li><a href="{{file.url}}">{{file.name}}</a> ({{file.type}}, {{file.size}}bytes)</li>
+                    @endforeach
+                    </ul>
+                </footer>
+            </main>
         </div>
     </body>
 </html>

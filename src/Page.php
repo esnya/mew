@@ -42,12 +42,34 @@ class Page {
             return $this->_html;
         } else {
             $markdown = preg_replace('/\[(.*?)\](?!\()/', '[$1]($1)', $this->getMarkdown());
-            $markdown = preg_replace_callback('/\[(.*?)\]\((.*?)\)/', function ($matches) {
-                $str = $matches[1];
-                $url = $matches[2];
+            $markdown = preg_replace_callback('/(!)?\[(.*?)\]\((.*?)\)/', function ($matches) {
+                $str = $matches[2];
+                $url = $matches[3];
 
                 if (preg_match('/^(https?:\/\/|\/)/', $url)) {
                     return $matches[0];
+                } else if ($matches[1]) {
+                    preg_match('/^([^\/]*\/)?(.*?)( ".*")?$/', $url, $path);
+
+                    $page = $path[1];
+                    if (empty($page)) {
+                        $page = $this->name;
+                    } else {
+                        $page = substr($page, 0, -1);
+                    }
+                    $page = urlencode($page);
+
+                    $file = urlencode($path[2]);
+
+                    $title = $path[3];
+
+                    $url = "?a=file&p=$page&f=$file";
+
+                    if (empty($title)) {
+                        return "![$str]($url)";
+                    } else {
+                        return "![$str]($url $title)";
+                    }
                 } else {
                     $encoded = urlencode($url);
                     return "[$str](?p=$encoded)";
@@ -57,6 +79,17 @@ class Page {
             $this->_translated = $this->name;
             return $this->_html;
         }
+    }
+
+    public function getFiles() {
+        $ptn = dirname(dirname(__FILE__)) . '/file/' . $this->getHash() . '_*.json';
+        return array_map(function ($json) {
+            $file = json_decode(file_get_contents($json), true);
+            $p = urlencode($this->name);
+            $f = urlencode($file['name']);
+            $file['url'] = "?a=file&p=$p&f=$f";
+            return $file;
+        }, glob($ptn));
     }
 
     public function setMarkdown($markdown) {

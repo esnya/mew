@@ -32,10 +32,6 @@ try {
         redirect('?p=' . urlencode($add->name));
     }
 
-    if (!$page->exists()) {
-        throw new NotFoundException($page->name);
-    }
-
     if ($action == 'edit'
         && $_SERVER['REQUEST_METHOD'] === 'POST'
         && array_key_exists('code', $_POST)) {

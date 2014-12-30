@@ -2,6 +2,7 @@
 namespace ukatama\Wiki;
 
 use Michelf\MarkdownExtra;
+use ukatama\Wiki\Error\NotFoundException;
 
 class Page {
     protected $_loaded;
@@ -27,6 +28,9 @@ class Page {
         if ($this->_loaded === $this->name) {
             return $this->_markdown;
         } else {
+            if (!$this->exists()) {
+                throw new NotFoundException($page->name);
+            }
             $this->_markdown = file_get_contents($this->getFile());
             $this->_loaded = $this->name;
             return $this->_markdown;

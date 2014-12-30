@@ -19,7 +19,7 @@
         </header>
         <div id=container>
             <nav>{{sidebar}}</nav>
-            <main>Sorry, "{{page}}" not exists.</main>
+            <main>A page "{{page}}" doesn't exists.</main>
         </div>
     </body>
 </html>

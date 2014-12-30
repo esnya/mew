@@ -11,7 +11,7 @@ class Theme {
     protected function _parse($action, $code, $variables) {
         $extended = $variables;
 
-        $code = preg_replace_callback('/@block\((.*?)\)((.|\r|\n)*?)@endblock/m', function ($matches) use (&$extended, $variables) {
+        $code = preg_replace_callback('/@block\((.*?)\)((.|\r|\n)*?)@endblock/m', function ($matches) use (&$extended, $variables, $action) {
             $block = $matches[1];
             $code = $matches[2];
             $extended[$block] = $this->_parse($action, $code, $variables);
@@ -21,7 +21,7 @@ class Theme {
         if (preg_match('/@extends\((.*?)\)/', $code, $matches)) {
             return $this->_renderer($matches[1], $extended);
         } else {
-            $code = preg_replace_callback('/@foreach\((.*) +in +(.*)\)((.|\r|\n)*?)@endforeach/m', function ($matches) use($variables) {
+            $code = preg_replace_callback('/@foreach\((.*) +in +(.*)\)((.|\r|\n)*?)@endforeach/m', function ($matches) use($action, $variables) {
                 $name = $matches[1];
                 $array = $matches[2];
                 $code = $matches[3];
@@ -30,7 +30,7 @@ class Theme {
                     return '';
                 }
 
-                return implode(array_map(function ($value) use ($variables, $code, $name) {
+                return implode(array_map(function ($value) use ($action, $variables, $code, $name) {
                     $variables[$name] = $value;
                     return $this->_parse($action, $code, $variables);
                 }, $variables[$array]));

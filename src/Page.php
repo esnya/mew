@@ -58,17 +58,15 @@ class Page {
                         $page = substr($page, 0, -1);
                     }
                     $page = urlencode($page);
-
                     $file = urlencode($path[2]);
-
-                    $title = $path[3];
 
                     $url = "?a=file&p=$page&f=$file";
 
-                    if (empty($title)) {
-                        return "![$str]($url)";
-                    } else {
+                    if (count($path) == 4) {
+                        $title = $path[3];
                         return "![$str]($url $title)";
+                    } else {
+                        return "![$str]($url)";
                     }
                 } else {
                     $encoded = urlencode($url);

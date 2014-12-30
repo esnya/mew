@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config/wiki.php';
+
+ini_set('display_errors', $config['debug']);
 
 use \Michelf\MarkdownExtra;
 use ukatama\Wiki\Theme;
 use ukatama\Wiki\Page;
 use ukatama\Wiki\Error\NotFoundException;
-
-ini_set('display_errors', 1);
 
 function redirect($url) {
     header('Location: ' . $url, true, 301);
@@ -14,9 +15,9 @@ function redirect($url) {
 }
 
 try {
-    $theme = new Theme('default');
-    $page = new Page(array_key_exists('p', $_GET) ? $_GET['p'] : 'index');
-    $sidebar = new Page('sidebar');
+    $theme = new Theme($config['theme']);
+    $page = new Page(array_key_exists('p', $_GET) ? $_GET['p'] : $config['index']);
+    $sidebar = new Page($config['sidebar']);
 
     $action = 'view';
     if (array_key_exists('a', $_GET)) {

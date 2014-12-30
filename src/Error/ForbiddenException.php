@@ -1,5 +1,5 @@
 <?php
-namespace ukatama\Wiki\Error;
+namespace ukatama\Mew\Error;
 
 class ForbiddenException extends \Exception {
 }

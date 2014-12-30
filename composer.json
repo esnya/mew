@@ -1,6 +1,6 @@
 {
-    "name": "ukatama/wiki",
-    "description": "A lightweight wiki can be edited in markdown",
+    "name": "ukatama/mew",
+    "description": "Markdown Easy Wiki",
     "license": "MIT",
     "authors": [
         {
@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "ukatama\\Wiki\\": "src/"
+            "ukatama\\Mew\\": "src/"
         }
     },
     "require": {

@@ -4,10 +4,10 @@ require_once __DIR__ . '/config/wiki.php';
 
 ini_set('display_errors', $config['debug']);
 
-use ukatama\Wiki\Error\ForbiddenException;
-use ukatama\Wiki\Error\InternalErrorException;
-use ukatama\Wiki\Error\NotFoundException;
-use ukatama\Wiki\Controller;
+use ukatama\Mew\Error\ForbiddenException;
+use ukatama\Mew\Error\InternalErrorException;
+use ukatama\Mew\Error\NotFoundException;
+use ukatama\Mew\Controller;
 
 $controller = new Controller($config);
 $page = array_key_exists('p', $_GET) ? $_GET['p'] : $config['index'];

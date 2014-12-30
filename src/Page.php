@@ -1,8 +1,8 @@
 <?php
-namespace ukatama\Wiki;
+namespace ukatama\Mew;
 
 use Michelf\MarkdownExtra;
-use ukatama\Wiki\Error\NotFoundException;
+use ukatama\Mew\Error\NotFoundException;
 
 class Page {
     protected $_loaded;

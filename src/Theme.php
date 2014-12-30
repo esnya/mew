@@ -1,5 +1,5 @@
 <?php
-namespace ukatama\Wiki;
+namespace ukatama\Mew;
 
 class Theme {
     public $name;

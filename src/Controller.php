@@ -1,10 +1,10 @@
 <?php
-namespace ukatama\Wiki;
+namespace ukatama\Mew;
 
-use ukatama\Wiki\Error\ForbiddenException;
-use ukatama\Wiki\Error\InternalErrorException;
-use ukatama\Wiki\Error\NotFoundException;
-use ukatama\Wiki\Page;
+use ukatama\Mew\Error\ForbiddenException;
+use ukatama\Mew\Error\InternalErrorException;
+use ukatama\Mew\Error\NotFoundException;
+use ukatama\Mew\Page;
 
 class Controller {
     public $theme;

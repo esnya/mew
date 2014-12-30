@@ -30,5 +30,6 @@
                 </footer>
             </main>
         </div>
+        {{script}}
     </body>
 </html>

@@ -10,7 +10,7 @@
             <h1><a href="?p={{page}}">{{title}}</a></h1>
             <nav>
                 <ul>
-                    <li><a href="?p=index">top</a></li>
+                    <li><a href="?">top</a></li>
                     <li><a href="?p={{page}}&a=edit">edit</a></li>
                     <li><a href="?a=add">add</a></li>
                     <li><a href="?p={{page}}&a=remove">remove</a></li>

@@ -28,6 +28,9 @@ Markdownで記事を記述可能な簡単なWikiシステムを目指して開�
 * パスワード
 * プラグイン
 
+## バグ・要望・プルリク
+[githubのissues](https://github.com/ukatama/mew/issues)に
+
 ## ライセンス表示
 [MITライセンス](https://github.com/ukatama/mew/blob/master/LICENSE.txt)
 

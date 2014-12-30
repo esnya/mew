@@ -76,7 +76,7 @@ class Controller {
 
     public function add() {
         if ($this->method == 'POST' && array_key_exists('name', $this->data)) {
-            $page = new Page($this->data['name']);
+            $page = new Page($this->data['name'], $this->filter);
             $page->touch();
             return $this->redirect(['a' => 'edit', 'p' => $page->name]);
         }

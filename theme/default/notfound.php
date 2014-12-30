@@ -19,7 +19,12 @@
         </header>
         <div id=container>
             <nav>{{sidebar}}</nav>
-            <main>A page "{{page}}" doesn't exists.</main>
+            <main>
+                <form method=POST>
+                    <p>A page "{{page}}" doesn't exists.</p>
+                    <p>Add and edit "<a href="?p={{page}}&a=edit">{{page}}</a>" ?</p>
+                </form>
+            </main>
         </div>
     </body>
 </html>

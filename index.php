@@ -27,9 +27,11 @@ try {
     if ($action == 'add'
         && $_SERVER['REQUEST_METHOD'] === 'POST'
         && array_key_exists('name', $_POST)) {
-        $add = new Page($_POST['name']);
-        $add->touch();
-        redirect('?p=' . urlencode($add->name));
+        redirect('?a=edit&p=' . urlencode($_POST['name']));
+    }
+
+    if ($action == 'edit' && !$page->exists()) {
+        $page->touch();
     }
 
     if ($action == 'edit'

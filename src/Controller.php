@@ -7,6 +7,7 @@ use ukatama\Mew\Error\NotFoundException;
 use ukatama\Mew\Page;
 
 class Controller {
+    public $filter;
     public $theme;
     public $sidebar;
 
@@ -16,8 +17,10 @@ class Controller {
     public $data;
 
     public function __construct($config = []) {
+        $this->filter = $config['tag'];
+
         $this->theme = new Theme($config['theme']);
-        $this->sidebar = new Page($config['sidebar']);
+        $this->sidebar = new Page($config['sidebar'], $this->filter);
     }
 
     public function dispatch($page, $action, $variables = []) {
@@ -30,7 +33,7 @@ class Controller {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->data = $_POST;
         $this->files = $_FILES;
-        $this->page = new Page($page);
+        $this->page = new Page($page, $this->filter);
         $options = $_GET;
 
         if ($this->{$action}($options) !== false) {

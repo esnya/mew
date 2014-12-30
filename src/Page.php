@@ -10,9 +10,11 @@ class Page {
     protected $_markdown;
     protected $_html;
     public $name;
+    public $filter;
 
-    public function __construct($name) {
+    public function __construct($name, $filter) {
         $this->name = $name;
+        $this->filter = $filter;
         $this->reload();
     }
 
@@ -41,7 +43,23 @@ class Page {
         if ($this->_translated === $this->name) {
             return $this->_html;
         } else {
-            $markdown = preg_replace('/\[(.*?)\](?!\()/', '[$1]($1)', $this->getMarkdown());
+            $markdown = $this->getMarkdown();
+
+            $markdown = preg_replace_callback('|</?(.*?)( .*?)?>|', function ($matches) {
+                if (is_array($this->filter['whitelist'])) {
+                    $filtered = !in_array($matches[1], $this->filter['whitelist']);
+                } else {
+                    $filtered = in_array($matches[1], $this->filter['blacklist']);
+                }
+
+                if ($filtered) {
+                    return htmlspecialchars($matches[0]);
+                } else {
+                    return $matches[0];
+                }
+            }, $markdown);
+
+            $markdown = preg_replace('/\[(.*?)\](?!\()/', '[$1]($1)', $markdown);
             $markdown = preg_replace_callback('/(!)?\[(.*?)\]\((.*?)\)/', function ($matches) {
                 $str = $matches[2];
                 $url = $matches[3];

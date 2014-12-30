@@ -15,5 +15,10 @@ $config = [
         'image/jpeg',
     ],  // Arrowed uploading file types / アップロードを許可するファイルタイプ
 
+    'tag' => [
+        'whitelist' => null,    // Set array to use whitelis / 配列を設定することでホワイトリスト制に
+        'blacklist' => ['script', 'iframe'],
+    ],  // HTML tags can be used on markdown / Markdown中に使用可能なHTMLタグ
+
     'debug' => false,    // Debug mode / デバッグモード
 ];

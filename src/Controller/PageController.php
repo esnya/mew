@@ -99,14 +99,15 @@ class PageController extends Controller {
             throw new ForbiddenException;
         }
 
-        $id = $this->page->getHash() . '_' . hash('sha256', Input::get('f'));
-        $path = dirname(dirname(__FILE__)) . '/file/' . $id;
+        $name = Input::get('f');
+        $id = $this->page->getHash() . '_' . hash('sha256', $name);
+        $path = dirname(dirname(dirname(__FILE__))) . '/file/' . $id;
         if (!file_exists($path)) {
-            throw new NotFoundException;
+            throw new NotFoundException("A file \"$name\" is not found");
         }
         $json = $path. '.json';
         if (!file_exists($json)) {
-            throw new NotFoundException;
+            throw new NotFoundException("Informations of the file \"$name\" are not found");
         }
         $file = json_decode(file_get_contents($json), true);
 

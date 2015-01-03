@@ -58,7 +58,10 @@ class Theme {
 
     protected function _renderer($action, $variables) {
         $path = dirname(dirname(__FILE__)) . '/theme/' . $this->name . '/' . $action . '.php';
-        $code = file_get_contents($path);
+
+        ob_start();
+        include($path);
+        $code = ob_get_clean();
 
         $variables['theme'] = $this->name;
 

@@ -1,11 +1,13 @@
 <?php
 namespace ukatama\Mew;
 
+use ukatama\Mew\Config;
+
 class Theme {
     public $name;
 
-    public function __construct($name) {
-        $this->name = $name;
+    public function __construct() {
+        $this->name = Config::get('theme');
     }
 
     protected function _parse($action, $code, $variables) {

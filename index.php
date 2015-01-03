@@ -1,19 +1,20 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/config/wiki.php';
 
-ini_set('display_errors', $config['debug']);
-
+use ukatama\Mew\Config;
 use ukatama\Mew\Error\ForbiddenException;
 use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;
-use ukatama\Mew\Controller;
+use ukatama\Mew\Input;
+use ukatama\Mew\PageController;
 
-$controller = new Controller($config);
-$page = array_key_exists('p', $_GET) ? $_GET['p'] : $config['index'];
-$action = array_key_exists('a', $_GET) ? $_GET['a'] : 'view';
+ini_set('display_errors', Config::get('debug'));
+
+$controller = new PageController();
+$page = Input::get('p');
+$action = Input::get('a', 'view');
 try {
-    $controller->dispatch($page, $action);
+    $controller->dispatch($action);
 } catch (NotFoundException $e) {
     $controller->dispatch($page, 'notfound', ['page' => $page, 'message' => $e->getMessage()]);
 } catch (ForbiddenException $e) {

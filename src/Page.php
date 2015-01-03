@@ -13,14 +13,14 @@ class Page {
     public $id;
     public $filter;
 
-    public function __construct($name, $filter, $byId = false) {
+    public function __construct($name, $byId = false) {
         if ($byId) {
             $this->id = $name;
         } else {
             $this->name = $name;
             $this->id = hash('sha256', $this->name);
         }
-        $this->filter = $filter;
+        $this->filter = Config::get('filter');
         $this->reload();
     }
 

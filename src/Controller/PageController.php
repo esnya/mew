@@ -1,8 +1,8 @@
 <?php
-namespace ukatama\Mew;
+namespace ukatama\Mew\Controller;
 
 use ukatama\Mew\Config;
-use ukatama\Mew\Controller;
+use ukatama\Mew\Controller\Controller;
 use ukatama\Mew\Error\ForbiddenException;
 use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;

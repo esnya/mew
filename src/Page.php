@@ -58,14 +58,7 @@ class Page {
     }
 
     public function getNewLine() {
-        if ($this->_loaded !== $this->name) {
-            throw new InternalErrorException;
-        }
-
-        if (preg_match('/\r\n/', $this->_markdown)) {
-            return "\r\n";
-        }
-        return "\n";
+        return "\r\n";
     }
 
     public function getHTML() {

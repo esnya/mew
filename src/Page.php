@@ -74,51 +74,56 @@ class Page {
         } else {
             $markdown = $this->getMarkdown();
 
-            $markdown = preg_replace_callback('|</?(.*?)( .*?)?>|', function ($matches) {
-                if (is_array($this->filter['whitelist'])) {
-                    $filtered = !in_array($matches[1], $this->filter['whitelist']);
-                } else {
-                    $filtered = in_array($matches[1], $this->filter['blacklist']);
-                }
-
-                if ($filtered) {
-                    return htmlspecialchars($matches[0]);
-                } else {
-                    return $matches[0];
-                }
-            }, $markdown);
-
-            $markdown = preg_replace('/\[(.*?)\](?!\()/', '[$1]($1)', $markdown);
-            $markdown = preg_replace_callback('/(!)?\[(.*?)\]\((.*?)\)/', function ($matches) {
-                $str = $matches[2];
-                $url = $matches[3];
-
-                if (preg_match('/^(https?:\/\/|\/)/', $url)) {
-                    return $matches[0];
-                } else if ($matches[1]) {
-                    preg_match('/^([^\/]*\/)?(.*?)( ".*")?$/', $url, $path);
-
-                    $page = $path[1];
-                    if (empty($page)) {
-                        $page = $this->name;
+            $markdown = preg_replace_callback('/((.|\r|\n)*?)((```(.|\r|\n)*?```)|$)/m', function ($matches) {
+                $markdown = $matches[1];
+                $markdown = preg_replace_callback('|</?(.*?)( .*?)?>|', function ($matches) {
+                    if (is_array($this->filter['whitelist'])) {
+                        $filtered = !in_array($matches[1], $this->filter['whitelist']);
                     } else {
-                        $page = substr($page, 0, -1);
+                        $filtered = in_array($matches[1], $this->filter['blacklist']);
                     }
-                    $page = urlencode($page);
-                    $file = urlencode($path[2]);
 
-                    $url = "?a=file&p=$page&f=$file";
-
-                    if (count($path) == 4) {
-                        $title = $path[3];
-                        return "![$str]($url $title)";
+                    if ($filtered) {
+                        return htmlspecialchars($matches[0]);
                     } else {
-                        return "![$str]($url)";
+                        return $matches[0];
                     }
-                } else {
-                    $encoded = urlencode($url);
-                    return "[$str](?p=$encoded)";
-                }
+                }, $markdown);
+
+                $markdown = preg_replace('/\[(.*?)\](?!\()/', '[$1]($1)', $markdown);
+                $markdown = preg_replace_callback('/(!)?\[(.*?)\]\((.*?)\)/', function ($matches) {
+                    $str = $matches[2];
+                    $url = $matches[3];
+
+                    if (preg_match('/^(https?:\/\/|\/)/', $url)) {
+                        return $matches[0];
+                    } else if ($matches[1]) {
+                        preg_match('/^([^\/]*\/)?(.*?)( ".*")?$/', $url, $path);
+
+                        $page = $path[1];
+                        if (empty($page)) {
+                            $page = $this->name;
+                        } else {
+                            $page = substr($page, 0, -1);
+                        }
+                        $page = urlencode($page);
+                        $file = urlencode($path[2]);
+
+                        $url = "?a=file&p=$page&f=$file";
+
+                        if (count($path) == 4) {
+                            $title = $path[3];
+                            return "![$str]($url $title)";
+                        } else {
+                            return "![$str]($url)";
+                        }
+                    } else {
+                        $encoded = urlencode($url);
+                        return "[$str](?p=$encoded)";
+                    }
+                }, $markdown);
+
+                return $markdown . $matches[3];
             }, $markdown);
             $this->_html = MarkdownExtra::defaultTransform($markdown);
             $this->_translated = $this->name;

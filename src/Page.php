@@ -74,7 +74,7 @@ class Page {
         } else {
             $markdown = $this->getMarkdown();
 
-            $markdown = preg_replace_callback('/((.|\r|\n)*?)((```(.|\r|\n)*?```)|$)/m', function ($matches) {
+            $markdown = preg_replace_callback('/((.|\r|\n)*?)((```(.|\r|\n)*?```)|(`[^`](.|\r|\n)*?[^`]`)|$)/m', function ($matches) {
                 $markdown = $matches[1];
                 $markdown = preg_replace_callback('|</?(.*?)( .*?)?>|', function ($matches) {
                     if (is_array($this->filter['whitelist'])) {

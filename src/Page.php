@@ -2,7 +2,7 @@
 namespace ukatama\Mew;
 
 use Michelf\MarkdownExtra;
-use ukatama\Mew\Error\NotFoundException;
+use ukatama\Mew\Error\PageNotFoundException;
 
 class Page {
     protected $_loaded;
@@ -37,7 +37,7 @@ class Page {
             return $this->_markdown;
         } else {
             if (!$this->exists()) {
-                throw new NotFoundException($this->name);
+                throw new PageNotFoundException($this->name);
             }
             $markdown = file_get_contents($this->getFile());
             $markdown = preg_replace_callback('/^Title: (.*)(\r\n|\r|\n)/m', function ($matches) {

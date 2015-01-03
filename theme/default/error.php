@@ -1,7 +1,7 @@
 @extends(view)
 
 @block(title)
-404 Not Found
+500 Internal Server Error
 @endblock
 
 @block(content)

@@ -1,7 +1,7 @@
 @extends(view)
 
 @block(title)
-404 Not Found
+403 Forbidden
 @endblock
 
 @block(content)

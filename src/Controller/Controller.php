@@ -2,8 +2,6 @@
 namespace ukatama\Mew\Controller;
 
 use ukatama\Mew\Config;
-use ukatama\Mew\Error\ForbiddenException;
-use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;
 use ukatama\Mew\Input;
 use ukatama\Mew\Page;

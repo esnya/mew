@@ -7,10 +7,12 @@ use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;
 use ukatama\Mew\Input;
 use ukatama\Mew\PageController;
+use ukatama\Mew\Registry;
 
 ini_set('display_errors', Config::get('debug'));
 
-$controller = new PageController();
+$controller_name = Registry::controller(Input::get('c', 'page'));
+$controller = new $controller_name;
 $page = Input::get('p');
 $action = Input::get('a', 'view');
 try {

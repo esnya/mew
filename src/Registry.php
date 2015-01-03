@@ -11,6 +11,6 @@ class Registry {
         if (!class_exists($name)) {
             throw new NotFoundException("Controller \"$path\" is not defined");
         }
-        return $name;
+        return new $name;
     }
 }

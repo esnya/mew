@@ -84,7 +84,8 @@ class Controller {
 
     public function edit($options = []) {
         if ($this->method == 'POST' && array_key_exists('code', $this->data)) {
-            file_put_contents($this->page->getFile(), $this->data['code']);
+            $this->page->setMarkdown($this->data['code']);
+            $this->page->save();
             return $this->redirect(['p' => $this->page->name]);
         }
     }

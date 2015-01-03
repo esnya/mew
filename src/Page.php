@@ -10,16 +10,22 @@ class Page {
     protected $_markdown;
     protected $_html;
     public $name;
+    public $id;
     public $filter;
 
-    public function __construct($name, $filter) {
-        $this->name = $name;
+    public function __construct($name, $filter, $byId = false) {
+        if ($byId) {
+            $this->id = $name;
+        } else {
+            $this->name = $name;
+            $this->id = hash('sha256', $this->name);
+        }
         $this->filter = $filter;
         $this->reload();
     }
 
     public function getHash() {
-        return hash('sha256', $this->name);
+        return $this->id;
     }
 
     public function getFile() {
@@ -33,10 +39,33 @@ class Page {
             if (!$this->exists()) {
                 throw new NotFoundException($this->name);
             }
-            $this->_markdown = file_get_contents($this->getFile());
+            $markdown = file_get_contents($this->getFile());
+            $markdown = preg_replace_callback('/^Title: (.*)(\r\n|\r|\n)/m', function ($matches) {
+                $name = $matches[1];
+                if ($this->name) {
+                    if ($this->name !== $name) {
+                        throw new InternalErrorException;
+                    }
+                } else {
+                    $this->name = $name;
+                }
+                return '';
+            }, $markdown);
+            $this->_markdown = $markdown;
             $this->_loaded = $this->name;
             return $this->_markdown;
         }
+    }
+
+    public function getNewLine() {
+        if ($this->_loaded !== $this->name) {
+            throw new InternalErrorException;
+        }
+
+        if (preg_match('/\r\n/', $this->_markdown)) {
+            return "\r\n";
+        }
+        return "\n";
     }
 
     public function getHTML() {
@@ -111,7 +140,7 @@ class Page {
     public function setMarkdown($markdown) {
         $this->_translated = false;
         $this->_loaded = $this->name;
-        $this->_markdown = $markdown;
+        $this->_markdown = "Title: {$this->name}{$this->getNewLine()}" . $markdown;
     }
 
     public function reload() {
@@ -130,5 +159,12 @@ class Page {
     public function remove() {
         unlink($this->getFile());
         $this->reload();
+    }
+
+    public function save() {
+        if ($this->_loaded !== $this->name) {
+            throw new InternalErrorException;
+        }
+        file_put_contents($this->getFile(), $this->_markdown);
     }
 }

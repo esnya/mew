@@ -6,4 +6,5 @@
 
 @block(content)
 <p>{{msg}}</p>
+<pre>{{stacktrace}}</pre>
 @endblock

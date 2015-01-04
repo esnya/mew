@@ -83,7 +83,7 @@ class PageController extends Controller {
             }
 
             $id = $this->page->getHash() . '_' . hash('sha256', $file['name']);
-            $dst = dirname(dirname(__FILE__)) . '/file/' . $id;
+            $dst = dirname(dirname(dirname(__FILE__))) . '/file/' . $id;
             if (!move_uploaded_file($file['tmp_name'], $dst)) {
                 throw new InternalErrorException;
             }

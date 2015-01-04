@@ -1,4 +1,4 @@
-@extends(view)
+@extends(common)
 
 @block(title)
 Add new page

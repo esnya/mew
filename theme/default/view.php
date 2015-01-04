@@ -16,6 +16,7 @@
                     <li><a href="?p={{page}}&a=remove">remove</a></li>
                     <li><a href="?p={{page}}&c=markdown">markdown</a></li>
                     <li><a href="?c=markdown&a=zip">zip</a></li>
+                    <li><a href="?c=markdown&a=upload">upload</a></li>
                 </ul>
             </nav>
         </header>

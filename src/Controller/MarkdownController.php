@@ -48,4 +48,44 @@ class MarkdownController extends Controller {
 
         return false;
     }
+
+    public function upload() {
+        if (Input::hasFile('files') && $this->method === 'POST') {
+            $files = Input::file('files');
+
+            $num = count($files['name']);
+            $saved = 0;
+            for ($i = 0; $i < $num; ++$i) {
+                $file = array_combine(array_keys($files), array_map(function ($value) use ($i) {
+                    return $value[$i];
+                }, array_values($files)));
+
+                if (!is_uploaded_file($file['tmp_name'])) {
+                    throw new InternalErrorException;
+                }
+
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+
+                if ($ext == 'md') {
+                    $markdown = file_get_contents($file['tmp_name']);
+
+                    if (preg_match('/Title: (.*?)(\r\n|\r|\n)/', $markdown, $matches)) {
+                        $page_name = $matches[1];
+                    } else {
+                        $page_name = basename($file['name'], '.md');
+                    }
+
+                    $page = new Page($page_name);
+                    $page->setMarkdown($markdown);
+                    $page->save();
+                    ++$saved;
+                }
+            }
+
+            if ($saved == 1) {
+                return $this->redirect(['p' => $page_name]);
+            }
+        }
+    }
+
 }

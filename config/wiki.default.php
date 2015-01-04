@@ -14,6 +14,7 @@ $config = [
         'image/bmp',
         'image/jpeg',
     ],  // Arrowed uploading file types / アップロードを許可するファイルタイプ
+    'maxsize' => 512 * 1024,    // Maximum file size allows to uplaod / アップロードを許可する最大ファイルサイズ
 
     'tag' => [
         'whitelist' => null,    // Set array to use whitelis / 配列を設定することでホワイトリスト制に

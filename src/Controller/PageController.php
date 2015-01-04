@@ -70,11 +70,11 @@ class PageController extends Controller {
                 throw new InternalErrorException;
             }
 
-            if (!in_array($file['type'], Config::get('file')['type'])) {
+            if (!in_array($file['type'], Config::get('filetype'))) {
                 throw new ForbiddenException('Invalid file type');
             }
 
-            if ($file['size'] > Config::get('file')['max_size']) {
+            if ($file['size'] > Config::get('maxsize')) {
                 throw new ForbiddenException('Too large file');
             }
 

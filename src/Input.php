@@ -19,6 +19,6 @@ class Input {
     }
 
     static function file($file) {
-        return Input::hasFile($file) ? $_FILES[$file] : $default;
+        return Input::hasFile($file) ? $_FILES[$file] : null;
     }
 }

@@ -40,7 +40,7 @@ class Page {
                 throw new PageNotFoundException($this->name);
             }
             $markdown = file_get_contents($this->getFile());
-            $markdown = preg_replace_callback('/^Title: (.*)(\r\n|\r|\n)/m', function ($matches) {
+            $markdown = preg_replace_callback('/^Title: (.*?)(\r\n|\r|\n)/', function ($matches) {
                 $name = $matches[1];
                 if ($this->name) {
                     if ($this->name !== $name) {
@@ -138,7 +138,7 @@ class Page {
     public function setMarkdown($markdown) {
         $this->_translated = false;
         $this->_loaded = $this->name;
-        $this->_markdown = "Title: {$this->name}{$this->getNewLine()}" . $markdown;
+        $this->_markdown = "Title: {$this->name}{$this->getNewLine()}" . preg_replace('/^Title: (.*?)(\r\n|\r|\n)/', '', $markdown);
     }
 
     public function reload() {

@@ -2,6 +2,7 @@
 namespace ukatama\Mew;
 
 use ukatama\Mew\Config;
+use ukatama\Mew\Error\NotFoundException;
 
 class Theme {
     public $name;
@@ -59,6 +60,9 @@ class Theme {
     protected function _renderer($action, $variables) {
         $path = dirname(dirname(__FILE__)) . '/theme/' . $this->name . '/' . $action . '.php';
 
+        if (!file_exists($path)) {
+            throw new NotFoundException("Template \"$action\" is not found");
+        }
         ob_start();
         include($path);
         $code = ob_get_clean();

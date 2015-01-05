@@ -2,6 +2,7 @@
 namespace ukatama\Mew;
 
 use Michelf\MarkdownExtra;
+use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\PageNotFoundException;
 
 class Page {

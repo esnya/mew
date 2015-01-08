@@ -35,7 +35,7 @@ class PageController extends Controller {
             if ($this->page->exists()) {
                 $this->viewVars['code'] = $this->page->getHead()->getData();
                 $this->viewVars['content'] = $this->converter->convert($this->viewVars['code'], $this->page->getName());
-                $this->viewVars['sidebar'] = $this->converter->convert($this->sidebar->getHead()->getData(), $this->sidevar->getName);
+                $this->viewVars['sidebar'] = $this->converter->convert($this->sidebar->getHead()->getData(), $this->sidebar->getName());
                 $this->viewVars['files'] = $this->page->getFiles();
             }
         }

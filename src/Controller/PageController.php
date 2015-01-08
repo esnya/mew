@@ -97,7 +97,7 @@ class PageController extends Controller {
                 throw new ForbiddenException('Invalid file');
             }
 
-            $id = $this->page->getHash() . '_' . hash('sha256', $file['name']);
+            $id = $this->page->getId() . '_' . sha1($file['name']);
             $dst = dirname(dirname(dirname(__FILE__))) . '/file/' . $id;
             if (!move_uploaded_file($file['tmp_name'], $dst)) {
                 throw new InternalErrorException;
@@ -117,7 +117,7 @@ class PageController extends Controller {
         }
 
         $name = Input::get('f');
-        $id = $this->page->getHash() . '_' . hash('sha256', $name);
+        $id = $this->page->getId() . '_' . sha1($name);
         $path = dirname(dirname(dirname(__FILE__))) . '/file/' . $id;
         if (!file_exists($path)) {
             throw new NotFoundException("A file \"$name\" is not found");

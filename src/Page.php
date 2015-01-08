@@ -76,7 +76,14 @@ class Page {
     }
 
     public function getFiles() {
-        return [];
+        $ptn = Config::get('file') . '/' . $this->getId() . '_*.json';
+        return array_map(function ($json) {
+            $file = json_decode(file_get_contents($json), true);
+            $p = urlencode($this->getName());
+            $f = urlencode($file['name']);
+            $file['url'] = "?a=file&p=$p&f=$f";
+            return $file;
+        }, glob($ptn));
     }
 
     static function getPages() {

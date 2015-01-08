@@ -18,4 +18,19 @@ class Config {
         }
         return array_key_exists($name, Config::$_config) ? Config::$_config[$name] : null;
     }
+
+    public static function set($name, $value) {
+        Config::$_config[$name] = $value;
+    }
+
+    public static function backup() {
+        if (!Config::$_loaded) {
+            Config::_load();
+        }
+        return Config::$_config;
+    }
+
+    public static function restore($data) {
+        Config::$_config = $data;
+    }
 }

@@ -37,3 +37,20 @@ Markdownで記事を記述可能な簡単なWikiシステムを目指して開�
 [MITライセンス](https://github.com/ukatama/mew/blob/master/LICENSE.txt)
 
 [PHP Markdown Extra](https://github.com/michelf/php-markdown/blob/lib/License.md)
+
+## v0.1について
+v0.1とv0.2以降のページデータは互換性がありません。
+以下の方法で移行することができます。
+
+* メニューバーの"zip"からページを保存
+* zipファイルを解凍
+* Mewを更新 (例：git pull)
+* メニューバーの"uplaod"から解答した.mdファイルをアップロード
+
+"v0.2" or later versions are incompatible with "v0.1".
+Update way from v0.1 to other versions is shown in the following.
+
+* Save all pages from "zip"
+* Decompless downloaded zip file
+* Update Mew (e.g. git pull)
+* Uplaod decomplessed .md files using "uplaod"

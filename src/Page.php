@@ -78,4 +78,10 @@ class Page {
     public function getFiles() {
         return [];
     }
+
+    static function getPages() {
+        return array_map(function ($file) {
+            return new Page(basename($file));
+        }, array_filter(glob(Config::get('page') . '/*'), 'is_file'));
+    }
 }

@@ -8,11 +8,11 @@ use ukatama\Mew\Page;
 
 class MarkdownController extends Controller {
     public function view() {
-        $page = new Page(Input::get('p', Config::get('index')));
-        $name = urlencode($page->name . '.md');
+        $page = new Page(Input::get('p', Config::get('index')), 'name');
+        $name = urlencode($page->getName() . '.md');
         header('Content-Type: text/x-markdown; charset="UTF-8"');
         header("Content-Disposition: inline; filename=\"$name\"");
-        echo $page->getMarkdown();
+        echo $page->getHead()->getData();
         return false;
     }
 
@@ -25,10 +25,11 @@ class MarkdownController extends Controller {
             throw new InternalErrorException;
         }
 
-        foreach (glob(dirname(dirname(dirname(__FILE__))) . '/page/*.md') as $md) {
-            $page = new Page(basename($md, '.md'), true);
-            $page->getMarkdown();
-            $zip->addFile($md, mb_convert_encoding($page->name, 'sjis-win', 'UTF-8') . '.md');
+        foreach (Page::getPages() as $page) {
+            $markdown = 'Title: ' . $page->getName() . "\r\n" . $page->getHead()->getData();
+            if (!$zip->addFromString(mb_convert_encoding($page->getName(), 'sjis-win', 'UTF-8') . '.md', $markdown)) {
+                throw new InternalErrorException;
+            }
         }
 
         $zip->close();
@@ -69,15 +70,14 @@ class MarkdownController extends Controller {
                 if ($ext == 'md') {
                     $markdown = file_get_contents($file['tmp_name']);
 
-                    if (preg_match('/Title: (.*?)(\r\n|\r|\n)/', $markdown, $matches)) {
+                    $page_name = basename($file['name'], '.md');
+                    $markdown = preg_replace_callback('/Title: (.*?)(\r\n|\r|\n)/', function ($matches) use (&$page_name) {
                         $page_name = $matches[1];
-                    } else {
-                        $page_name = basename($file['name'], '.md');
-                    }
+                        return '';
+                    }, $markdown);
 
-                    $page = new Page($page_name);
-                    $page->setMarkdown($markdown);
-                    $page->save();
+                    $page = new Page($page_name, 'name');
+                    $page->update($markdown);
                     ++$saved;
                 }
             }

@@ -1,5 +1,7 @@
 /vendor/
 composer.lock
-/page/
 config/wiki.php
+/page/
 /file/
+/test/page/
+/test/file/

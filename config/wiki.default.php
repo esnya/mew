@@ -4,6 +4,9 @@ $config = [
     'index' => 'Mew', // Top page name / トップページ名
     'sidebar' => 'sidebar', // Sidebar page name / サイドバー名
 
+    'page' => 'page',   // Page saving directory / ページを保存するディレクトリ
+    'file' => 'file',   // File saving directory / ファイルを保存するディレクトリ
+
     'admin' => [
         'admin',
         hash('sha256', 'admin'), // sha256 hashed

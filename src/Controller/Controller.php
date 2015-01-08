@@ -25,7 +25,7 @@ class Controller {
 
     public function __construct() {
         $this->theme = new Theme(Config::get('theme'));
-        $this->sidebar = new Page(Config::get('sidebar'));
+        $this->sidebar = new Page(Config::get('sidebar'), 'name');
     }
 
     public function dispatch($action) {

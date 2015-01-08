@@ -3,59 +3,72 @@ namespace ukatama\Mew\Controller;
 
 use ukatama\Mew\Config;
 use ukatama\Mew\Controller\Controller;
+use ukatama\Mew\Converter\MarkdownConverter;
 use ukatama\Mew\Error\ForbiddenException;
 use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;
+use ukatama\Mew\Error\PageNotFoundException;
 use ukatama\Mew\Input;
 use ukatama\Mew\Page;
 
 class PageController extends Controller {
     public $page;
 
+    protected function _enforceExists() {
+        if (!$this->page->exists()) {
+            throw new PageNotFoundException($this->page->getName());
+        }
+    }
+
     protected function  _beforeFilter() {
         parent::_beforeFilter();
-        $this->page = new Page(Input::get('p', Config::get('index')));
+        $this->page = new Page(Input::get('p', Config::get('index')), 'name');
+        $this->converter = new MarkdownConverter;
     }
 
     protected function _beforeRender() {
         parent::_beforeRender();
 
         if ($this->page) {
-            $this->viewVars['page'] = $this->page->name;
-            $this->viewVars['title'] = $this->page->name;
-            $this->viewVars['code'] = $this->page->getMarkdown();
-            $this->viewVars['content'] = $this->page->getHTML();
-            $this->viewVars['sidebar'] = $this->sidebar->getHTML();
-            $this->viewVars['files'] = $this->page->getFiles();
+            $this->viewVars['page'] = $this->page->getName();
+            $this->viewVars['title'] = $this->page->getName();
+            if ($this->page->exists()) {
+                $this->viewVars['code'] = $this->page->getHead()->getData();
+                $this->viewVars['content'] = $this->converter->convert($this->viewVars['code'], $this->page->getName());
+                $this->viewVars['sidebar'] = $this->converter->convert($this->sidebar->getHead()->getData(), $this->sidevar->getName);
+                $this->viewVars['files'] = $this->page->getFiles();
+            }
         }
     }
 
     public function view() {
+        $this->_enforceExists();
     }
 
     public function add() {
         if ($this->method == 'POST' && Input::has('name')) {
-            $page = new Page(Input::get('name'));
-            $page->touch();
-            return $this->redirect(['a' => 'edit', 'p' => $page->name]);
+            $page = new Page(Input::get('name'), 'name');
+            return $this->redirect(['a' => 'edit', 'p' => $page->getName()]);
         }
     }
 
     public function edit() {
         if ($this->method == 'POST' && Input::has('code')) {
-            $this->page->setMarkdown(Input::get('code'));
-            $this->page->save();
-            return $this->redirect(['p' => $this->page->name]);
+            $this->page->update(Input::get('code'));
+            return $this->redirect(['p' => $this->page->getName()]);
         }
     }
 
     public function preview() {
         if ($this->method == 'POST' && Input::has('code')) {
-            $this->page->setMarkdown(Input::get('code'));
+            echo $this->converter->convert(Input::get('code'));
+            return false;
         }
     }
 
     public function remove() {
+        $this->_enforceExists();
+
         if ($this->method == 'POST' && Input::get('remove') === 'yes') {
             $this->page->remove();
             return $this->redirect([]);
@@ -63,6 +76,8 @@ class PageController extends Controller {
     }
 
     public function upload($options = []) {
+        $this->_enforceExists();
+
         if ($this->method == 'POST'&& Input::hasFile('file')) {
             $file = Input::file('file');
 
@@ -95,6 +110,8 @@ class PageController extends Controller {
     }
 
     public function file() {
+        $this->_enforceExists();
+
         if (!Input::has('f')) {
             throw new ForbiddenException;
         }
@@ -117,5 +134,4 @@ class PageController extends Controller {
         echo file_get_contents($path);
         return false;
     }
-
 }

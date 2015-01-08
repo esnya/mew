@@ -3,120 +3,79 @@ namespace ukatama\Mew;
 
 use Michelf\MarkdownExtra;
 use ukatama\Mew\Error\InternalErrorException;
+use ukatama\Mew\Error\NotFoundException;
 use ukatama\Mew\Error\PageNotFoundException;
 use ukatama\Mew\Converter\MarkdownConverter;
 
 class Page {
-    protected $_loaded;
-    protected $_translated;
-    protected $_markdown;
-    protected $_html;
-    public $name;
-    public $id;
-    public $filter;
-    public $converter;
+    protected $_id;
+    protected $_name = null;
+    protected $_index = null;
+    protected $_index_id = null;
 
-    public function __construct($name, $byId = false) {
-        if ($byId) {
-            $this->id = $name;
-        } else {
-            $this->name = $name;
-            $this->id = hash('sha256', $this->name);
-        }
-        $this->filter = Config::get('filter');
-        $this->converter = new MarkdownConverter;
-        $this->reload();
-    }
-
-    public function getHash() {
-        return $this->id;
-    }
-
-    public function getFile() {
-        return 'page/' . $this->getHash() . '.md';
-    }
-
-    public function getMarkdown() {
-        if ($this->_loaded === $this->name) {
-            return $this->_markdown;
-        } else {
-            if (!$this->exists()) {
-                throw new PageNotFoundException($this->name);
+    public function __construct($arg, $mode = 'id') {
+        if ($mode === 'id') {
+            $this->_id = $arg;
+            if (!file_exists($this->getFileName())) {
+                throw new NotFoundException('Page "' . $this->_id . '" is not found');
             }
-            $markdown = file_get_contents($this->getFile());
-            $markdown = preg_replace_callback('/^Title: (.*?)(\r\n|\r|\n)/', function ($matches) {
-                $name = $matches[1];
-                if ($this->name) {
-                    if ($this->name !== $name) {
-                        throw new InternalErrorException;
-                    }
-                } else {
-                    $this->name = $name;
-                }
-                return '';
-            }, $markdown);
-            $this->_markdown = $markdown;
-            $this->_loaded = $this->name;
-            return $this->_markdown;
-        }
-    }
+            $this->_load();
+        } else if ($mode === 'name') {
+            $this->_id = sha1($arg);
+            $this->_name = $arg;
 
-    public function getNewLine() {
-        return "\r\n";
-    }
-
-    public function getHTML() {
-        if ($this->_translated === $this->name) {
-            return $this->_html;
+            if (file_exists($this->getFileName())) {
+                $this->_load();
+            }
         } else {
-            $markdown = $this->getMarkdown();
-
-            $this->_html = $this->converter->convert($markdown, $this->name);
-
-            $this->_translated = $this->name;
-            return $this->_html;
+            throw new InternalErrorException;
         }
     }
 
-    public function getFiles() {
-        $ptn = dirname(dirname(__FILE__)) . '/file/' . $this->getHash() . '_*.json';
-        return array_map(function ($json) {
-            $file = json_decode(file_get_contents($json), true);
-            $p = urlencode($this->name);
-            $f = urlencode($file['name']);
-            $file['url'] = "?a=file&p=$p&f=$f";
-            return $file;
-        }, glob($ptn));
+    protected function _load() {
+        $json = json_decode(file_get_contents($this->getFileName()));
+
+        if ($this->_name && $this->_name != $json->name) {
+            throw new InternalErrorException;
+        }
+
+        $this->_name = $json->name;
+        $this->_index_id = $json->index;
     }
 
-    public function setMarkdown($markdown) {
-        $this->_translated = false;
-        $this->_loaded = $this->name;
-        $this->_markdown = "Title: {$this->name}{$this->getNewLine()}" . preg_replace('/^Title: (.*?)(\r\n|\r|\n)/', '', $markdown);
+    public function getId() {
+        return $this->_id;
     }
 
-    public function reload() {
-        $this->_loaded = false;
-        $this->_translated = false;
+    public function getFileName() {
+        return Config::get('page') . '/' . $this->getId();
     }
 
-    public function touch() {
-        file_put_contents($this->getFile(), '');
+    public function getName() {
+        return $this->_name;
+    }
+
+    public function getHead() {
+        if (!$this->_index && $this->_index_id) {
+            $this->_index = new Index($this->_index_id);
+        }
+        return $this->_index;
+    }
+
+    public function update($data) {
+        $this->_index = new Index($this->getName(), $data, $this->_index_id);
+        $this->_index_id = $this->_index->getId();
+        file_put_contents($this->getFileName(), json_encode([
+            'name' => $this->getName(),
+            'index' => $this->_index_id,
+        ]));
     }
 
     public function exists() {
-        return file_exists($this->getFile());
+        return file_exists($this->getFileName());
     }
 
-    public function remove() {
-        unlink($this->getFile());
-        $this->reload();
-    }
-
-    public function save() {
-        if ($this->_loaded !== $this->name) {
-            throw new InternalErrorException;
-        }
-        file_put_contents($this->getFile(), $this->_markdown);
+    public function getFiles() {
+        return [];
     }
 }

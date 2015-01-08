@@ -1,169 +1,97 @@
 <?php
+use ukatama\Mew\Config;
 use ukatama\Mew\Page;
+use ukatama\Mew\Index;
 
 class PageTest extends PHPUnit_Framework_TestCase {
     private $_backup;
-
-    private function getTestPageInfo() {
-        $info = ['name' => 'PHPUnit_PageTest'];
-        $info['id'] = hash('sha256', $info['name']);
-        $info['file'] = dirname(dirname(__FILE__)) . '/page/' . $info['id'] . '.md';
-        return $info;
-    }
+    private $_pages;
 
     protected function setUp() {
-        $test_page = $this->getTestPageInfo();
-
-        // Danger?
-        if (file_exists($test_page['file'])) {
-            $this->_backup = file_get_contents($test_page['file']);
-            unlink($test_page['file']);
-        } else {
-            $this->_backup = null;
-        }
+        $this->_backup = Config::backup();
+        $this->_pages = dirname(__FILE__) . '/page';
+        Config::set('page', $this->_pages);
     }
 
     protected function tearDown() {
-        $test_page = $this->getTestPageInfo();
+        Config::restore($this->_backup);
 
-        if ($this->_backup !== null) {
-            file_put_contents($test_page['file'], $this->_backup);
-            $this->_backup = null;
+        foreach (glob($this->_pages . '/*/*') as $file) {
+            unlink($file);
+        }
+        foreach (glob($this->_pages . '/*') as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
         }
     }
 
     public function testConstructByName() {
-        $page = new Page('PHPUnit_PageTest');
+        $name = 'TestByNameName';
+        $page = new Page($name, 'name');
+        $id = sha1($name);
 
-        $this->assertEquals('PHPUnit_PageTest', $page->name);
-        $this->assertEquals(hash('sha256', 'PHPUnit_PageTest'), $page->id);
+        $this->assertEquals($id, $page->getId());
+        $this->assertEquals($name, $page->getName());
+    }
+
+    public function testUpdate() {
+        $name = 'TestByNameName';
+        $page = new Page($name, 'name');
+        $id = sha1($name);
+        $data = 'TestData';
+
+        $this->assertFalse(file_exists($this->_pages . '/' . $id));
+        $page->update($data);
+        $this->assertTrue(file_exists($this->_pages . '/' . $id));
     }
 
     public function testConstructById() {
-        $page = new Page(hash('sha256', 'PHPUnit_PageTest'), true);
+        $name = 'PageName';
+        $data = 'PageData';
+        $id = sha1($name);
 
-        $this->assertEquals(hash('sha256', 'PHPUnit_PageTest'), $page->id);
+        (new Page($name, 'name'))->update($data);
+
+        $page = new Page($id);
+
+        $this->assertEquals($id, $page->getId());
+        $this->assertEquals($name, $page->getName());
+        $this->assertEquals($data, $page->getHead()->getData());
     }
 
-    public function testGetFile() {
-        $page = new Page('PHPUnit_PageTest');
-
-        $this->assertEquals('page/' . hash('sha256', 'PHPUnit_PageTest') . '.md', $page->getFile());
+    /**
+     * @expectedException ukatama\Mew\Error\NotFoundException
+     * @expectedExceptionMessage Page "invalidid" is not found
+     */
+    public function testErrorInvaludId() {
+        new Page('invalidid');
     }
 
-    public function testGetMarkdown() {
-        $info = $this->getTestPageInfo();
+    public function testParent() {
+        $parent_name = 'Name';
+        $parent_data = 'ParentData';
 
-        $markdown = "# Test\r\n* Foobar";
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\n" . $markdown);
+        $parent = new Page($parent_name, 'name');
+        $parent->update($parent_data);
 
-        $page = new Page('PHPUnit_PageTest');
-        $this->assertEquals($markdown, $page->getMarkdown());
-    }
+        $name = 'Name';
+        $data = 'ChildData';
+        $id = sha1($name);
 
-    public function testGetNameFromId() {
-        $info = $this->getTestPageInfo();
+        (new Page($name, 'name'))->update($data);
 
-        $markdown = "# Test\r\n* Foobar";
-        file_put_contents($info['file'], "Title: TestTest\r\n" . $markdown);
+        $page = new Page($id);
 
-        $page = new Page($info['id'], true);
-        $this->assertEquals($markdown, $page->getMarkdown());
-        $this->assertEquals('TestTest', $page->name);
-    }
-
-    public function testGetHtml() {
-        $info = $this->getTestPageInfo();
-
-        $markdown = "# Test\r\n* Foobar";
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\n" . $markdown);
-
-        $page = new Page('PHPUnit_PageTest');
-        $this->assertContains('<h1>Test</h1>', $page->getHTML());
-        $this->assertContains('<li>Foobar</li>', $page->getHTML());
-        $this->assertContains('<li>Foobar</li>', $page->getHTML());
-    }
-
-    public function testGetFiles() {
-        // ToDo
-    }
-
-    public function testSetMarkdown() {
-        $info = $this->getTestPageInfo();
-
-        $markdown1 = "# TestSetMarkdown\r\nThis is a test.";
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\n" . $markdown1);
-
-        $page = new Page('PHPUnit_PageTest');
-
-        $markdown2 = "# TestSetMarkdown\r\nThis is a test.\r\nThis is a test.";
-        $page->setMarkdown($markdown2);
-        $this->assertEquals("Title: PHPUnit_PageTest\r\n" . $markdown2, $page->getMarkdown());
-
-        $page->setMarkdown("Title: Test\r\n" . $markdown2);
-        $this->assertEquals("Title: PHPUnit_PageTest\r\n" . $markdown2, $page->getMarkdown());
-    }
-
-    public function testReload() {
-        $info = $this->getTestPageInfo();
-
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\nTest1");
-
-        $page = new Page('PHPUnit_PageTest');
-
-        $html = $page->getHTML();
-        $this->assertContains('Test1', $html);
-
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\nTest2");
-        $html = $page->getHTML();
-        $this->assertContains('Test1', $html);
-
-        $page->reload();
-
-        $html = $page->getHTML();
-        $this->assertContains('Test2', $html);
-    }
-
-    public function testTouch() {
-        $info = $this->getTestPageInfo();
-
-        $page = new Page('PHPUnit_PageTest');
-        $this->assertFalse(file_exists($info['file']));
-
-        $page->touch();
-        $this->assertTrue(file_exists($info['file']));
+        $this->assertEquals($parent->getHead()->getId(), $page->getHead()->getParent()->getId());
     }
 
     public function testExists() {
-        $info = $this->getTestPageInfo();
+        $page = new Page('PageName', 'name');
+        $id = $page->getId();
 
-        $page = new Page('PHPUnit_PageTest');
-        $this->assertFalse($page->exists());
-
-        touch($info['file']);
-        $this->assertTrue($page->exists());
-    }
-
-    public function testRemove() {
-        $info = $this->getTestPageInfo();
-        $page = new Page('PHPUnit_PageTest');
-        touch($info['file']);
-        $this->assertTrue(file_exists($info['file']));
-
-        $page->remove();
-        $this->assertFalse(file_exists($info['file']));
-    }
-
-    public function testSave() {
-        $info = $this->getTestPageInfo();
-
-        file_put_contents($info['file'], "Title: PHPUnit_PageTest\r\n#BeforeSave");
-
-        $page = new Page('PHPUnit_PageTest');
-        $page->setMarkdown('#AfterSave');
-
-        $this->assertEquals("Title: PHPUnit_PageTest\r\n#BeforeSave", file_get_contents($info['file']));
-        $page->save();
-        $this->assertEquals("Title: PHPUnit_PageTest\r\n#AfterSave", file_get_contents($info['file']));
+        $this->assertFalse((new Page('PageName', 'name'))->exists());
+        $page->update('Test');
+        $this->assertTrue((new Page('PageName', 'name'))->exists());
     }
 }

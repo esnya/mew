@@ -46,7 +46,7 @@ class Index {
             file_put_contents($this->getFilePath(), json_encode([
                 'name' => $this->_name,
                 'data' => $this->_data->getId(),
-                'parent' => $this->_parent ? $this->_parent->getId() : null,
+                'parent' => $this->_parent_id,
             ]));
         }
     }

@@ -15,7 +15,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
     public function testConstruct() {
         $ctr = new Controller;
         $this->assertEquals(Config::get('theme'), $ctr->theme->name);
-        $this->assertEquals(Config::get('sidebar'), $ctr->sidebar->name);
+        $this->assertEquals(Config::get('sidebar'), $ctr->sidebar->getName());
     }
 
     public function testDispatch() {

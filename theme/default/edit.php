@@ -30,6 +30,16 @@ Edit "{{title}}"
     $(function () {
     'use strict';
     $('[name=code]').bind({
+    keydown: function (e) {
+        if (e.keyCode == 9) {
+            e.preventDefault();
+            if (e.target) {
+                e.target.setRangeText('    ');
+                e.target.selectionEnd += 4;
+                e.target.selectionStart = e.target.selectionEnd;
+            }
+        }
+    },
     focus: function () {
         var input = $(this);
         if (!input.data('timer')) {

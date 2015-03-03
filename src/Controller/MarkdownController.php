@@ -19,25 +19,30 @@ class MarkdownController extends Controller {
     public function zip() {
         $zip = new \ZipArchive;
 
-        $filename = '/tmp/mew-' . hash('sha256', (new \DateTime)->getTimestamp()) . '.zip';
+        $basename = 'mew-' . hash('sha256', (new \DateTime)->getTimestamp()) . '.zip';
+        $filename = '/tmp/' . $basename;
+        //$filename = 'php://memory/maxmemory:536870912';
 
-        if ($zip->open($filename, \ZipArchive::CREATE) !== TRUE) {
+        if ($zip->open($filename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== TRUE) {
             throw new InternalErrorException;
         }
 
         foreach (Page::getPages() as $page) {
-            $markdown = 'Title: ' . $page->getName() . "\r\n" . $page->getHead()->getData();
-            if (!$zip->addFromString(mb_convert_encoding($page->getName(), 'sjis-win', 'UTF-8') . '.md', $markdown)) {
-                throw new InternalErrorException;
+            $head = $page->getHead();
+            if ($head) {
+                $markdown = 'Title: ' . $page->getName() . "\r\n" . $head->getData();
+                if (!$zip->addFromString(mb_convert_encoding($page->getName(), 'sjis-win', 'UTF-8') . '.md', $markdown)) {
+                    throw new InternalErrorException;
+                }
             }
         }
 
         $zip->close();
 
         $bin = file_get_contents($filename);
-        $size = count($bin);
+        $size = filesize($filename);
 
-        $filename = basename($filename);
+        $filename = basename($basename);
 
         header('Content-Type: application/x-compress');
         header("Content-Length: $size");

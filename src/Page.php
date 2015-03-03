@@ -39,8 +39,10 @@ class Page {
             throw new InternalErrorException;
         }
 
-        $this->_name = $json->name;
-        $this->_index_id = $json->index;
+        if ($json) {
+            $this->_name = $json->name;
+            $this->_index_id = $json->index;
+        }
     }
 
     public function getId() {

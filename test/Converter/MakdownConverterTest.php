@@ -1,4 +1,4 @@
-<?
+<?php
 use ukatama\Mew\Converter\MarkdownConverter;
 
 class MarkdownConverterTest extends PHPUnit_Framework_TestCase {
@@ -149,5 +149,14 @@ class MarkdownConverterTest extends PHPUnit_Framework_TestCase {
 
         $dst = $this->convert('hogehoge`![Page/image.png]`foobar');
         $this->assertContains('hogehoge<code>![Page/image.png]</code>foobar', $dst);
+    }
+
+    public function testMewTransclusion() {
+        $index = ukatama\Mew\Config::get('index');
+        $page = new ukatama\Mew\Page($index, 'name');
+
+        $dst = $this->convert('foo{{' . $index . '}}bar');
+
+        $this->assertContains($this->convert($page->getHead()->getData()), $dst);
     }
 }

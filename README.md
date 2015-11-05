@@ -1,4 +1,4 @@
-# Mew
+# Mew [![Build Status](https://travis-ci.org/ukatama/mew.svg)](https://travis-ci.org/ukatama/mew)
 Mew = Markdown Easy Wiki system
 
 Markdownで記事を記述可能な簡単なWikiシステムを目指して開発中です。

@@ -1,5 +1,6 @@
 language: php
 php:
-    - "5.6"
+    - 5.6
 install:
-    - "composer install"
+    - composer install
+    - cp config/wiki.default.php config/wiki.php

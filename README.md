@@ -1,56 +1,44 @@
-# Mew [![Build Status](https://travis-ci.org/ukatama/mew.svg)](https://travis-ci.org/ukatama/mew)
-Mew = Markdown Easy Wiki system
+# Mew
+[![Build Status](https://img.shields.io/travis/ukatama/mew/master.svg?style=flat-square)](https://travis-ci.org/ukatama/mew)
 
-Markdownで記事を記述可能な簡単なWikiシステムを目指して開発中です。
+Markdown Easy Wiki.
 
-[PHP Markdown Extra](https://github.com/michelf/php-markdown)によってMarkdownをHTML化しています。
-そのため、文法は基本的にPHP Markdown Extraに準じます。
+Pages are written by Markdown([PHP Markdown Extra](https://github.com/michelf/php-markdown)).
 
-## 使い方
-1. git clone https://github.com/ukatama/mew wiki
-2. cd wiki
-3. composer update
-4. cp config/wiki.default.php config/wiki.php
-5. HTTPアクセス可能にする
-  * PHPが実行可能な場所ならこれで終わり
-  * ローカル環境なら php -S localhost:80
-  * FTPでアップロードも可？（未検証）
-    * page,fileディレクトリとその中身を書き込み可能にすること
+## Usage
+1. Clone this repository
+```bash
+$ git clone https://github.com/ukatama/mew
+$ cd mew
+```
 
-## 機能
-* ページの編集
-* ページの追加
-* ページの削除
-* ファイルのアップロード
-* Markdownとしてダウンロード
-* Markdownファイルのインポート（アップロード）
+2. Install dependencies by composer
+```bash
+$ composer Install
+```
 
-## 未実装
-* ドキュメント
-* パスワード
-* プラグイン
+3. Copy default config
+```bash
+$ cp config/wiki.default.php config/wiki.php
+```
 
-## バグ・要望・プルリク
-[githubのissues](https://github.com/ukatama/mew/issues)に
+4. Allow HTTP access and PHP
+    * Copy into document root of Apache
+    * Run PHP built in web server `> php -S localhosr:80`
 
-## ライセンス表示
-[MITライセンス](https://github.com/ukatama/mew/blob/master/LICENSE.txt)
+## Features
+* Create/Read/Update/Remove pages
+* Upload attached files
+* Export (download) to Markdown
+* Import (upload) from Markdown
 
-[PHP Markdown Extra](https://github.com/michelf/php-markdown/blob/lib/License.md)
+## ToDo
+* Documentations
+* Password
+* Plugin system
 
-## v0.1について
-v0.1とv0.2以降のページデータは互換性がありません。
-以下の方法で移行することができます。
+## Bugs, Issues, PR
+Create new issue or pull request.
 
-* メニューバーの"zip"からページを保存
-* zipファイルを解凍
-* Mewを更新 (例：git pull)
-* メニューバーの"uplaod"から解答した.mdファイルをアップロード
-
-"v0.2" or later versions are incompatible with "v0.1".
-Update way from v0.1 to other versions is shown in the following.
-
-* Save all pages from "zip"
-* Decompless downloaded zip file
-* Update Mew (e.g. git pull)
-* Uplaod decomplessed .md files using "uplaod"
+## License
+* MIT License

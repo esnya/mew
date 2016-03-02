@@ -4,3 +4,7 @@ php:
 install:
     - composer install
     - cp config/wiki.default.php config/wiki.php
+script:
+    - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml --whitelist src
+after_success:
+    - travis_retry ./vendor/bin/coveralls -v

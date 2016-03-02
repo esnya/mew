@@ -1,5 +1,6 @@
 # Mew
 [![Build Status](https://img.shields.io/travis/ukatama/mew/master.svg?style=flat-square)](https://travis-ci.org/ukatama/mew)
+[![Coverage Status](https://img.shields.io/coveralls/ukatama/mew.svg?style=flat-square)](https://coveralls.io/github/ukatama/mew)
 [![VersionEye](https://www.versioneye.com/user/projects/56d63e27d71695003886b7e7/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d63e27d71695003886b7e7)
 
 Markdown Easy Wiki.

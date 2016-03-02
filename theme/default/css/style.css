@@ -25,6 +25,9 @@ header nav ul {
 header nav ul li {
     display: inline;
 }
+header h1 img {
+    vertical-align: middle;
+}
 
 #container {
     display: flex;

@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7.0-apache
 MAINTAINER ukatama dev.ukatama@gmail.com
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

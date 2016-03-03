@@ -34,23 +34,46 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
         $this->controller->view();
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testRedirectAfterAdd() {
-        $this->controller->method = 'POST';
-        $_REQUEST['name'] = 'test-page2';
+    public function testAdd() {
+        ob_start();
+        $this->controller->dispatch('add');
+        $output = ob_get_clean();
 
-        $this->controller->add();
-
-        $this->assertEquals(302, http_response_code());
+        $this->assertContains('<input type=text name=name id=form-name>', $output);
     }
 
     /**
      * @runInSeparateProcess
      */
+    public function testRedirectAfterAdd() {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_REQUEST['name'] = 'test-page2';
+
+        ob_start();
+        $this->controller->dispatch('add');
+        $output = ob_get_clean();
+
+        $this->assertEquals(302, http_response_code());
+        $this->assertContains('Location: ?a=edit&p=test-page2', xdebug_get_headers());
+    }
+
     public function testEdit() {
+        ob_start();
+        $this->controller->dispatch('edit');
+        $output = ob_get_clean();
+
+        $this->assertContains('<textarea name=code>', $output);
+        $this->assertContains('<input type=file name=file>', $output);
+        $this->assertContains('<div id=preview>', $output);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testReadirectAfterEdit() {
         $this->controller->method = 'POST';
+        $this->page->method('getName')->willReturn('test-page3');
+        $this->controller->page = $this->page;
         $_REQUEST['code'] = 'test-page-code';
 
         $this->page
@@ -63,6 +86,7 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
         $this->controller->edit();
 
         $this->assertEquals(302, http_response_code());
+        $this->assertContains('Location: ?p=test-page3', xdebug_get_headers());
     }
 
     public function testPreview() {

@@ -28,9 +28,17 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $ctr->test1);
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testRedirect() {
-        // ToDo
-        //$ctr = new TestController;
-        //$this->assertFalse($ctr->redirect(['a' => 'view', 'c' => 'test', 'p' => 'test1']));
+        $ctr = new TestController;
+
+        $this->assertFalse($ctr->redirect(['a' => 'view', 'c' => 'test', 'p' => 'test1']));
+
+        $this->assertEquals(302, http_response_code());
+
+        $headers = xdebug_get_headers();
+        $this->assertContains('Location: ?a=view&c=test&p=test1', $headers);
     }
 }

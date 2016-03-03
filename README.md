@@ -16,7 +16,7 @@ Pages are written by Markdown([PHP Markdown Extra](https://github.com/michelf/ph
 
 2. Install dependencies by composer.
    ```bash
-   $ composer Install
+   $ composer install
    ```
 
 3. Copy default config.
@@ -31,6 +31,27 @@ Pages are written by Markdown([PHP Markdown Extra](https://github.com/michelf/ph
       ```bash
       $ php -S localhosr:80
       ```
+
+## Docker
+1. Clone this repository.
+   ```bash
+   $ git clone https://github.com/ukatama/mew
+   ```
+
+2. Build image.
+   ```bash
+   $ docker build -t ukatama/mew mew
+   ```
+
+3. Make config.
+   ```bash
+   $ vi /path/to/config/wiki.php
+   ```
+
+4. Run container.
+   ```bash
+   $ docker run -d --name mew -p 80:80 -v /path/to/config:/var/www/html/config ukatama/mew
+   ```
 
 ## Features
 * Create/Read/Update/Remove pages

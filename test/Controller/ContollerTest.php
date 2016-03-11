@@ -30,6 +30,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @runInSeparateProcess
+     * @requires extension xdebug
      */
     public function testRedirect() {
         $ctr = new TestController;

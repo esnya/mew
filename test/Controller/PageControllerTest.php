@@ -44,6 +44,7 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @runInSeparateProcess
+     * @requires extension xdebug
      */
     public function testRedirectAfterAdd() {
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -69,6 +70,7 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @runInSeparateProcess
+     * @requires extension xdebug
      */
     public function testReadirectAfterEdit() {
         $this->controller->method = 'POST';

@@ -8,6 +8,7 @@ use ukatama\Mew\Error\ForbiddenException;
 use ukatama\Mew\Error\InternalErrorException;
 use ukatama\Mew\Error\NotFoundException;
 use ukatama\Mew\Error\PageNotFoundException;
+use ukatama\Mew\Index;
 use ukatama\Mew\Input;
 use ukatama\Mew\Page;
 
@@ -64,6 +65,35 @@ class PageController extends Controller {
             echo $this->converter->convert(Input::get('code'));
             return false;
         }
+    }
+
+    public function history() {
+        $this->_enforceExists();
+
+        $history = [];
+        $index = $this->page->getHead();
+        do {
+            $timestamp = $index->getTimestamp();
+            array_push($history, [
+                'id' => $index->getId(),
+                'timestamp' => $timestamp
+                    ? date('Y-m-d H:i:s', $timestamp)
+                    : null,
+            ]);
+            $index = $index->getParent();
+        } while ($index);
+        $this->viewVars['history'] = $history;
+    }
+
+    public function histview() {
+        $this->_enforceExists();
+
+        $index = new Index(Input::get('id'));
+        $timestamp = $index->getTimestamp();
+        $this->viewVars['timestamp'] = $timestamp
+            ? date('Y-m-d H:i:s', $timestamp)
+            : null;
+        $this->viewVars['data'] = $index->getData();
     }
 
     public function remove() {

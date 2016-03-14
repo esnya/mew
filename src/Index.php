@@ -13,6 +13,7 @@ class Index {
     private $_data = null;
     private $_parent_id = null;
     private $_parent = null;
+    private $_timestamp = null;
 
     public function __construct($one, $two = null, $three = null) {
         if ($two === null) {
@@ -21,11 +22,14 @@ class Index {
                 throw new NotFoundException('Index "' . $this->_id . '" is not found');
             }
 
-            $json = json_decode(file_get_contents($this->getFilePath()));
+            $json = json_decode(file_get_contents($this->getFilePath()), true);
 
-            $this->_name = $json->name;
-            $this->_data_id = $json->data;
-            $this->_parent_id = $json->parent;
+            $this->_name = $json['name'];
+            $this->_data_id = $json['data'];
+            $this->_parent_id = $json['parent'];
+            $this->_timestamp = array_key_exists('timestamp', $json)
+                ? $json['timestamp']
+                : null;
         } else {
             $this->_id = sha1(sha1($one) . sha1($two) . sha1(time()) . sha1(rand()));
             $this->_name = $one;
@@ -43,10 +47,13 @@ class Index {
                 throw new InternalErrorException;
             }
 
+            $this->_timestamp = time();
+
             file_put_contents($this->getFilePath(), json_encode([
                 'name' => $this->_name,
                 'data' => $this->_data->getId(),
                 'parent' => $this->_parent_id,
+                'timestamp' => $this->_timestamp,
             ]));
         }
     }
@@ -83,5 +90,9 @@ class Index {
             $this->_data = new Object($this->_data_id, 'id');
         }
         return $this->_data->getData();
+    }
+
+    public function getTimestamp() {
+        return $this->_timestamp;
     }
 }

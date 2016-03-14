@@ -135,6 +135,21 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
         $this->markTestIncomplete('ToDo');
     }
 
+    public function testHistory() {
+        $builder = $this->getMockBuilder('\ukatama\Mew\Index')
+            ->disableOriginalConstructor();
+        $index = $builder->getMock();
+        $parent = $builder->getMock();
+        $index->method('getParent')->willReturn($parent);
+        $parent->method('getParent')->willReturn(null);
+
+        $this->page->method('exists')->willReturn(true);
+        $this->controller->page = $this->page;
+        $this->page->method('getHead')->willReturn($index);
+
+        $this->controller->history();
+    }
+
     public function testUpload() {
         $this->markTestIncomplete('ToDo');
     }

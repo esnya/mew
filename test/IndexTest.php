@@ -23,6 +23,7 @@ class IndexTest extends PHPUnit_Framework_TestCase {
     public function testConstructByNameAndData() {
         $name = 'Test/PageName1';
         $data = 'TestData1';
+        $time = \time();
         $index = new Index($name, $data);
         $this->assertEquals($name, $index->getName());
         $this->assertEquals($data, $index->getData());
@@ -33,6 +34,7 @@ class IndexTest extends PHPUnit_Framework_TestCase {
         $index = new Index($name, $data);
         $this->assertEquals($name, $index->getName());
         $this->assertEquals($data, $index->getData());
+        $this->assertEquals($time, $index->getTimestamp());
     }
 
     public function testConstructByDataWithParent() {

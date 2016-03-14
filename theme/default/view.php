@@ -6,6 +6,7 @@
 
 @block(actions)
 <li><a href="?p={{page}}&a=edit">edit</a></li>
+<li><a href="?p={{page}}&a=history">history</a></li>
 <li><a href="?p={{page}}&a=remove">remove</a></li>
 <li><a href="?p={{page}}&c=markdown">markdown</a></li>
 @endblock

@@ -76,9 +76,10 @@ class PageController extends Controller {
             $timestamp = $index->getTimestamp();
             array_push($history, [
                 'id' => $index->getId(),
+                'name' => $index->getName(),
                 'timestamp' => $timestamp
                     ? date('Y-m-d H:i:s', $timestamp)
-                    : null,
+                    : '????-??-?? ??:??:??',
             ]);
             $index = $index->getParent();
         } while ($index);

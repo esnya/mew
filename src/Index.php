@@ -29,7 +29,7 @@ class Index {
             $this->_parent_id = $json['parent'];
             $this->_timestamp = array_key_exists('timestamp', $json)
                 ? $json['timestamp']
-                : null;
+                : filemtime($this->getFilePath());
         } else {
             $this->_id = sha1(sha1($one) . sha1($two) . sha1(time()) . sha1(rand()));
             $this->_name = $one;

@@ -3,12 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <title>{{title}}</title>
+        <link rel=stylesheet href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css">
         <link rel=stylesheet href=theme/{{theme}}/css/style.css>
         <link rel="shortcut icon" type="image/svg+xml" href="mew.svg">
         <link rel="icon" type="image/svg+xml" href="mew.svg">
     </head>
-    <body>
-        <header>
+    <body class="markdown-body">
+        <header id="header">
             <h1>
                 <a href="?"><img src="mew.svg"></a>
                 <a href="{{headerlink}}">
@@ -26,9 +27,9 @@
             </nav>
         </header>
         <div id=container>
-            <nav>{{sidebar}}</nav>
+            <nav id="sidebar">{{sidebar}}</nav>
             <main>
-                <div>{{content}}</div>
+                <div id="content">{{content}}</div>
                 <footer>{{footer}}</footer>
             </main>
         </div>

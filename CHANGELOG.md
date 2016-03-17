@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Page history.
+### Changed
+- Use GitHub markdown CSS.
 
 ## [1.0.0] - 2016-03-15
 ### Added

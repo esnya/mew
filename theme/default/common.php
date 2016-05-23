@@ -5,8 +5,8 @@
         <title>{{title}}</title>
         <link rel=stylesheet href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css">
         <link rel=stylesheet href=theme/{{theme}}/css/style.css>
-        <link rel="shortcut icon" type="image/svg+xml" href="mew.svg">
-        <link rel="icon" type="image/svg+xml" href="mew.svg">
+        <link rel="shortcut icon" type="image/png" href="mew64.png">
+        <link rel="icon" type="image/png" href="mew64.png">
     </head>
     <body class="markdown-body">
         <header id="header">
